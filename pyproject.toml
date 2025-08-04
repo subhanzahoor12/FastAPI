@@ -3,7 +3,7 @@ name = "fastapi-practice"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Zeeshan Asim",email = "zeeshanravian1@gmail.com"}
+    {name = "Subhan Zahoor",email = "2024n15330@gmail.com"}
 ]
 readme = "README.md"
 
