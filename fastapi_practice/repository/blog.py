@@ -6,18 +6,22 @@ from fastapi_practice.cores.schemas import BlogResponse
 from fastapi.encoders import jsonable_encoder
 
 
-def get_all(db: Session):
-    cached = get_from_redis("blogs")
-    if cached:
-        return cached
-    else:
-        blogs = db.query(models.Blog).all()
-        blogs_list = [
-            BlogResponse(**{k: v for k, v in blog.__dict__.items()})
-            for blog in blogs
-        ]
-        set_from_db_to_redis("blogs", jsonable_encoder(blogs_list))
-        return blogs
+# def get_all(page_num: int = 1,page_size : int =10,db: Session):
+#     start = (page_num - 1) * page_size
+#     end = start + page_size 
+#     blogs = db.query(models.Blog).all()
+#     return blogs[start:end]
+    # cached = get_from_redis("blogs")
+    # if cached:
+    #     return cached
+    # else:
+    #     blogs = db.query(models.Blog).all()
+    #     blogs_list = [
+    #         BlogResponse(**{k: v for k, v in blog.__dict__.items()})
+    #         for blog in blogs
+    #     ]
+    #     set_from_db_to_redis("blogs", jsonable_encoder(blogs_list))
+    #     return blogs
 
 
 def create(request: schemas.ShowBlog, db: Session):
