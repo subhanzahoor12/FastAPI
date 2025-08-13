@@ -1,20 +1,34 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from .. import models,schemas
-from fastapi import HTTPException,status
+from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
+from fastapi_practice.cores import models, schemas
+from fastapi_practice.cores.schemas import BlogResponse
+from fastapi.encoders import jsonable_encoder
 
 
 def get_all(db: Session):
-    blog = db.query(models.Blog).all()
-    return blog
+    cached = get_from_redis("blogs")
+    if cached:
+        return cached
+    else:
+        blogs = db.query(models.Blog).all()
+        blogs_list = [
+            BlogResponse(**{k: v for k, v in blog.__dict__.items()})
+            for blog in blogs
+        ]
+        set_from_db_to_redis("blogs", jsonable_encoder(blogs_list))
+        return blogs
 
-def create(request : schemas.Blog,db:Session):
+
+def create(request: schemas.ShowBlog, db: Session):
     new_blog = models.Blog(title=request.title, body=request.body, user_id=1)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
     return new_blog
 
-def destroy(id:int,db:Session):
+
+def destroy(id: int, db: Session):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
         raise HTTPException(
@@ -25,7 +39,8 @@ def destroy(id:int,db:Session):
     db.commit()
     return "done"
 
-def update(id:int,request: schemas.Blog,db:Session):
+
+def update(id: int, request: schemas.ShowBlog, db: Session):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
         raise HTTPException(

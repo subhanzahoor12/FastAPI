@@ -1,43 +1,14 @@
 from fastapi import FastAPI
-from typing import Optional
-from pydantic import BaseModel
-import uvicorn
+
+from fastapi_practice.cores import models
+from fastapi_practice.cores.database import engine
+from fastapi_practice.routers import authentication, blog, user
 
 app = FastAPI()
 
+# models.Base.metadata.drop_all(engine)
+models.Base.metadata.create_all(engine)
 
-@app.get('/blog')
-def index(limit = 12 , published : bool = True,sort : Optional[str] = None):
-    if published:
-        return {"data": f"{limit} published blogs from the db"}
-    else:
-        return {'data': f"{limit} blogs from the db"}
-
-@app.get("/blog/unpublished")
-def unpublished():
-    return {"data": "all blogs are unpublished"}
-
-@app.get('/blog/{id}')
-def about(id:int):
-    return {'data': id}
-
-@app.get('/blog/{id}/comments')
-def comments(id):
-    return {'data':{'1','2'}}
- 
-@app.get('/blog/unpublished')
-def unpublished():
-    return {'data': 'all blogs are unpublished'}
-
-class Blog(BaseModel):
-    title: str
-    body: str
-    published: Optional[bool]
-
-@app.post('/blog')
-def create_blog(blog: Blog):
-    return {'data': f'blog is created as title {blog.title}'}
-
-
-# if __name__ == "__main__":
-#     uvicorn.run(app, host='127.0.0.1', port=9000)
+app.include_router(authentication.router)
+app.include_router(blog.router)
+app.include_router(user.router)
