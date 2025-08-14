@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, status,HTTPException
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+
 from fastapi_practice.cores import database, models, oauth2, schemas
 from fastapi_practice.repository import blog
 
@@ -10,18 +11,20 @@ get_db = database.get_db
 
 @router.get("/")
 def get_all(
+    request: schemas.Blog = Depends(),
+    db: Session = Depends(get_db),
     page_num: int = 1,
     page_size: int = 10,
-    column: str | None = None,
-    column_value: str | None = None,
-    db: Session = Depends(get_db),
 ):
     start = (page_num - 1) * page_size
     end = start + page_size
-    blog_column = getattr(models.Blog,column,None)
-    if blog_column is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail = f"column {column} does not exist")
-    blogs = db.query(models.Blog).filter(blog_column.ilike(f"%{column_value}%")).all()
+    conditions = []
+    request = dict(request)
+    for key, value in request.items():
+        if value is not None:
+            blog_column = getattr(models.Blog, key, None)
+            conditions.append(blog_column.ilike(f"%{value}%"))
+    blogs = db.query(models.Blog).filter(*conditions).all()
     blogs_length = len(blogs)
     response = {
         "blogs": blogs[start:end],

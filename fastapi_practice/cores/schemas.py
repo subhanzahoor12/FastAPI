@@ -6,17 +6,14 @@ from pydantic import BaseModel
 class BlogBase(BaseModel):
     title: str
     body: str
-    
+
     model_config = {"from_attributes": True}
-
-
 
 
 class User(BaseModel):
     name: str
     email: str
     password: str
-
 
 
 class ShowBlog(BaseModel):
@@ -31,7 +28,7 @@ class ShowUser(BaseModel):
     email: str
     blogs: List[ShowBlog] = []
 
-    model_config = {"from_attributes": True}    
+    model_config = {"from_attributes": True}
 
 
 class Login(BaseModel):
@@ -53,4 +50,7 @@ class BlogResponse(BaseModel):
     title: str
     body: str
 
-    
+
+class Blog(BaseModel):
+    title: str | None = None
+    body: str | None = None
