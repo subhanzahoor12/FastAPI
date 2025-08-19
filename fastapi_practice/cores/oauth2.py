@@ -12,4 +12,4 @@ def get_current_user(data: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    return token.verify_token(data, credentials_exception)
+    return verify_token(data, credentials_exception)

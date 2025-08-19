@@ -1,63 +1,63 @@
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlmodel import Session,select
 from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
-from fastapi_practice.cores import models, schemas
-from fastapi_practice.cores.schemas import BlogResponse
+from fastapi_practice.cores.models import Blog
 from fastapi.encoders import jsonable_encoder
 
 
-# def get_all(page_num: int = 1,page_size : int =10,db: Session):
-#     start = (page_num - 1) * page_size
-#     end = start + page_size 
-#     blogs = db.query(models.Blog).all()
-#     return blogs[start:end]
-    # cached = get_from_redis("blogs")
-    # if cached:
-    #     return cached
-    # else:
-    #     blogs = db.query(models.Blog).all()
-    #     blogs_list = [
-    #         BlogResponse(**{k: v for k, v in blog.__dict__.items()})
-    #         for blog in blogs
-    #     ]
-    #     set_from_db_to_redis("blogs", jsonable_encoder(blogs_list))
-    #     return blogs
+def get_all(db: Session,page_num: int = 1,page_size : int =10):
+    start = (page_num - 1) * page_size
+    end = start + page_size 
+    blogs = db.exec(select(Blog)).all()
+    return blogs[start:end]
+    cached = get_from_redis("blogs")
+    if cached:
+        return cached
+    else:
+        blogs = db.query(Blog).all()
+        blogs_list = [
+            Blog(**{k: v for k, v in blog.__dict__.items()})
+            for blog in blogs
+        ]
+        set_from_db_to_redis("blogs", jsonable_encoder(blogs_list))
+        return blogs
 
 
-def create(request: schemas.ShowBlog, db: Session):
-    new_blog = models.Blog(title=request.title, body=request.body, user_id=1)
-    db.add(new_blog)
+def create(request : Blog, db: Session):
+    db.add(request)
     db.commit()
-    db.refresh(new_blog)
-    return new_blog
+    db.refresh(request)
+    return request
 
 
 def destroy(id: int, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
-    if not blog.first():
+    blog = db.get(Blog,id)
+    if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Blog with id : {id} is not availaible",
         )
-    blog.delete(synchronize_session=False)
+    db.delete(blog)
     db.commit()
-    return "done"
+    return blog
 
 
-def update(id: int, request: schemas.ShowBlog, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
-    if not blog.first():
+def update(id: int, request: Blog, db: Session):
+    blog = db.get(Blog,id)
+    if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"blog with id {id} not found",
         )
-    blog.update(request.dict())
+    blog.title = request.title
+    blog.body = request.title
+    db.add(blog)
     db.commit()
     return "updated"
 
 
 def show(id: int, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    blog = db.get(Blog,id)
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
