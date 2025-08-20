@@ -13,3 +13,13 @@ class Blog(SQLModel,table = True):
     user_id: int | None = Field(default = None,foreign_key="user.id")
     creator : User =Relationship(back_populates= "blogs")
 
+class Login(SQLModel):
+    username: str
+    password: str
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str 
+
+class TokenData(SQLModel):
+    email: str | None = None       

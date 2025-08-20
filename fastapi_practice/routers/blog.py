@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from sqlmodel import Session
 
-from fastapi_practice.cores import database, models, oauth2, schemas
+from fastapi_practice.cores import database, models, oauth2
 from fastapi_practice.repository import blog
 
 

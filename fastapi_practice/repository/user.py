@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session,select
 from fastapi.encoders import jsonable_encoder
-from fastapi_practice.cores import models, schemas
+from fastapi_practice.cores import models
 from fastapi_practice.cores.hashing import Hash
 from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
 
