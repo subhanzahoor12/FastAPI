@@ -1,17 +1,14 @@
 from logging.config import fileConfig
 
-from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
 from sqlmodel import SQLModel
-from fastapi_practice.cores.models import User,Blog
-from pathlib import Path
+from alembic import context
+from fastapi_practice.cores.models import Users,Blog
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
-DB_PATH = str((Path().parent / "blog.db").resolve())
-config.set_main_option("sqlalchemy.url", f"sqlite:///{DB_PATH}")
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
