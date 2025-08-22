@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel,Field,Relationship
 from typing import List
-class Users(SQLModel, table=True):
+class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     email :str
     name: str
@@ -11,7 +11,7 @@ class Blog(SQLModel,table= True):
     title: str
     body: str
     user_id: int | None = Field(default = None,foreign_key="user.id")
-    creator : Users =Relationship(back_populates= "blogs")
+    creator : User =Relationship(back_populates= "blogs")
 
 class Login(SQLModel):
     username: str
@@ -22,4 +22,11 @@ class Token(SQLModel):
     token_type: str 
 
 class TokenData(SQLModel):
-    email: str | None = None       
+    email: str | None = None      
+
+
+class EventData(SQLModel):
+    name: str
+    start: str  
+    end: str
+    currency: str | None = Field(default="USD")
