@@ -4,7 +4,6 @@ from sqlmodel import Session
 from fastapi_practice.cores import database, models, oauth2
 from fastapi_practice.repository import blog
 
-
 router = APIRouter(prefix="/blog", tags=["Blogs"])
 
 get_db = database.get_db

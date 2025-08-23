@@ -17,6 +17,7 @@ def create_user(request: models.User, db: Session = Depends(get_db)):
 def get_user(id: int, db: Session = Depends(get_db)):
     return user.show(id, db)
 
+
 @router.get("/")
 def get_all(db: Session = Depends(get_db)):
     return user.show_all(db)

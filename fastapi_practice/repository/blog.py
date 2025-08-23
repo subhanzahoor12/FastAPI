@@ -1,13 +1,14 @@
 from fastapi import HTTPException, status
-from sqlmodel import Session,select
-from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
-from fastapi_practice.cores.models import Blog
 from fastapi.encoders import jsonable_encoder
+from sqlmodel import Session, select
+
+from fastapi_practice.cores.models import Blog
+from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
 
 
-def get_all(db: Session,page_num: int = 1,page_size : int =10):
+def get_all(db: Session, page_num: int = 1, page_size: int = 10):
     start = (page_num - 1) * page_size
-    end = start + page_size 
+    end = start + page_size
     blogs = db.exec(select(Blog)).all()
     return blogs[start:end]
     cached = get_from_redis("blogs")
@@ -16,14 +17,13 @@ def get_all(db: Session,page_num: int = 1,page_size : int =10):
     else:
         blogs = db.query(Blog).all()
         blogs_list = [
-            Blog(**{k: v for k, v in blog.__dict__.items()})
-            for blog in blogs
+            Blog(**{k: v for k, v in blog.__dict__.items()}) for blog in blogs
         ]
         set_from_db_to_redis("blogs", jsonable_encoder(blogs_list))
         return blogs
 
 
-def create(request : Blog, db: Session):
+def create(request: Blog, db: Session):
     db.add(request)
     db.commit()
     db.refresh(request)
@@ -31,7 +31,7 @@ def create(request : Blog, db: Session):
 
 
 def destroy(id: int, db: Session):
-    blog = db.get(Blog,id)
+    blog = db.get(Blog, id)
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -43,7 +43,7 @@ def destroy(id: int, db: Session):
 
 
 def update(id: int, request: Blog, db: Session):
-    blog = db.get(Blog,id)
+    blog = db.get(Blog, id)
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -57,7 +57,7 @@ def update(id: int, request: Blog, db: Session):
 
 
 def show(id: int, db: Session):
-    blog = db.get(Blog,id)
+    blog = db.get(Blog, id)
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

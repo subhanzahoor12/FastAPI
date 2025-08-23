@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
-from sqlmodel import Session,select
 from fastapi.encoders import jsonable_encoder
+from sqlmodel import Session, select
+
 from fastapi_practice.cores import models
 from fastapi_practice.cores.hashing import Hash
 from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
@@ -20,13 +21,14 @@ def create(request: models.User, db: Session):
 
 
 def show(id: int, db: Session):
-    user = db.get(models.User,id)
+    user = db.get(models.User, id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"user with id {id} is not available",
         )
     return user
+
 
 def show_all(db: Session):
     cached = get_from_redis("users")
@@ -41,4 +43,3 @@ def show_all(db: Session):
         set_from_db_to_redis("users", jsonable_encoder(users_list))
 
         return users
-
