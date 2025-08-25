@@ -10,6 +10,7 @@ router = APIRouter(prefix="/eventbrite", tags=["EventBrite"])
 async def create_event_endpoint(
     organization_id: str, data: EventData = Body(...)
 ):
+    
     event_payload = {
         "event": {
             "name": {"html": data.name},
