@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
-from config import SECRET_KEY
 from jose import JWTError, jwt
 
 from fastapi_practice.cores import models
+from fastapi_practice.cores.config import SECRET_KEY
 
 SECRET_KEY = SECRET_KEY
 ALGORITHM = "HS256"
