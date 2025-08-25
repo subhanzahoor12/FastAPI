@@ -1,8 +1,7 @@
 from sqlmodel import Session, create_engine
+from fastapi_practice.cores.config import db_url
 
-SQLALCHAMY_DATABASE_URL = (
-    "postgresql://postgres:Python&123Zee@localhost:5432/subhan"
-)
+SQLALCHAMY_DATABASE_URL = (db_url)
 
 
 engine = create_engine(SQLALCHAMY_DATABASE_URL, echo=True)

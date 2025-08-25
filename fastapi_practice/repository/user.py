@@ -43,3 +43,30 @@ def show_all(db: Session):
         set_from_db_to_redis("users", jsonable_encoder(users_list))
 
         return users
+
+def update(id: int, request: models.UserUpdate, db: Session):
+    user = db.get(models.User, id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"blog with id {id} not found",
+        )
+    update_data = request.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {"detail": f"user {id} updated successfully!"}
+
+def destroy(id: int, db: Session):
+    user = db.get(models.User, id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Blog with id : {id} is not availaible",
+        )
+    db.delete(user)
+    db.commit()
+    return user

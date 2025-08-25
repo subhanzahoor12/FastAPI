@@ -38,3 +38,9 @@ class EventData(SQLModel):
     start: str
     end: str
     currency: str | None = Field(default="USD")
+
+
+class UserUpdate(SQLModel):
+    email: str | None = None
+    name: str | None = None
+    password: str | None = None    

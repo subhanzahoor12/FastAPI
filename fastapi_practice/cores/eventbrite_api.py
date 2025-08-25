@@ -1,14 +1,8 @@
-import os
-
 import httpx
+from fastapi_practice.cores.config import EVENTBRITE_TOKEN, EVENTBRITE_URL
 
-with open(".env") as file:
-    for line in file:
-        key, value = line.strip().split("=", 1)
-        os.environ[key] = value
-
-EVENTBRITE_API = "https://www.eventbriteapi.com/v3"
-TOKEN = os.environ.get("EVENTBRITE_TOKEN")
+EVENTBRITE_API = EVENTBRITE_URL
+TOKEN = EVENTBRITE_TOKEN
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}",
     "Content-Type": "application/json",

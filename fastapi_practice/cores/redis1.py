@@ -1,5 +1,4 @@
 import json
-
 import redis
 
 redis_client = redis.Redis(
