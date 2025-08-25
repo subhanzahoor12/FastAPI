@@ -4,4 +4,5 @@ env.read_env()
 
 EVENTBRITE_TOKEN = env("EVENTBRITE_TOKEN")
 EVENTBRITE_URL = env("EVENTBRITE_URL")
-db_url = env("db_url")
+DB_URL = env("DB_URL")
+SECRET_KEY = env("SECRET_KEY")

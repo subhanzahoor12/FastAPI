@@ -1,5 +1,5 @@
 from logging.config import fileConfig
-from fastapi_practice.cores.config import db_url
+from fastapi_practice.cores.config import DB_URL
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
@@ -10,7 +10,7 @@ from fastapi_practice.cores.models import Blog, User  # noqa: F401
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option("sqlalchemy.url", db_url)
+config.set_main_option("sqlalchemy.url", DB_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

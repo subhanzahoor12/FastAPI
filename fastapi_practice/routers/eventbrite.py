@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body
-from fastapi_practice.cores.eventbrite_api import create_event, get_events
+
 from fastapi_practice.cores.models import EventData
+from fastapi_practice.repository.eventbrite_api import create_event, get_events
 
 router = APIRouter(prefix="/eventbrite", tags=["EventBrite"])
 

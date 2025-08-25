@@ -1,7 +1,7 @@
 from sqlmodel import Session, create_engine
-from fastapi_practice.cores.config import db_url
+from fastapi_practice.cores.config import DB_URL
 
-SQLALCHAMY_DATABASE_URL = (db_url)
+SQLALCHAMY_DATABASE_URL = (DB_URL)
 
 
 engine = create_engine(SQLALCHAMY_DATABASE_URL, echo=True)

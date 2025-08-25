@@ -1,4 +1,5 @@
 import httpx
+
 from fastapi_practice.cores.config import EVENTBRITE_TOKEN, EVENTBRITE_URL
 
 EVENTBRITE_API = EVENTBRITE_URL
