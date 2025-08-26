@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -43,4 +44,13 @@ class EventData(SQLModel):
 class UserUpdate(SQLModel):
     email: str | None = None
     name: str | None = None
-    password: str | None = None    
+    password: str | None = None
+
+
+class Chat(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    sender_id: int = Field(foreign_key="user.id")
+    message: str
+    timestamp: datetime.datetime = Field(
+        default_factory=datetime.datetime.utcnow
+    )
