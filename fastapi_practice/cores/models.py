@@ -49,7 +49,8 @@ class UserUpdate(SQLModel):
 
 class Chat(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    sender_id: int = Field(foreign_key="user.id")
+    user_id: int = Field(foreign_key="user.id")  
+    receiver_id: int = Field(foreign_key="user.id") 
     message: str
     timestamp: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow
