@@ -1,7 +1,14 @@
 from fastapi import FastAPI
-from fastapi_practice.routers import authentication, blog, user, eventbrite,sockets
-from fastapi_practice.cores.database import engine
 from sqlmodel import SQLModel
+
+from fastapi_practice.cores.database import engine
+from fastapi_practice.routers import (
+    authentication,
+    blog,
+    eventbrite,
+    sockets,
+    user,
+)
 
 app = FastAPI()
 

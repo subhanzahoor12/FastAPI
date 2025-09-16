@@ -15,6 +15,7 @@ def get_all(
     db: Session = Depends(get_db),
     page_num: int = 1,
     page_size: int = 10,
+    current_user: models.User = Depends(oauth2.get_current_user),
 ):
     return blog.get_all(request,db)
 

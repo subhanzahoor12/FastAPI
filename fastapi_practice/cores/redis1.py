@@ -5,12 +5,11 @@ import redis
 from fastapi_practice.cores.config import REDIS_PASSWORD
 
 redis_client = redis.Redis(
-    host="localhost",
+    host="127.0.0.1", 
     port=6379,
     password=REDIS_PASSWORD,
     decode_responses=True,
 )
-
 
 def get_from_redis(key):
     cached = redis_client.get(key)

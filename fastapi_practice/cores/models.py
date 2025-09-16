@@ -9,7 +9,13 @@ class User(SQLModel, table=True):
     email: str
     name: str
     password: str
+    picture_path: str | None = None  
     blogs: List["Blog"] = Relationship(back_populates="creator")
+
+class UserCreate(SQLModel):
+    email: str
+    name: str
+    password: str
 
 
 class Blog(SQLModel, table=True):

@@ -1,10 +1,48 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends, UploadFile, File
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import Session, select
-
+from fastapi_practice.cores.models import User
+from pathlib import Path
+from fastapi_practice.cores.oauth2 import get_current_user
 from fastapi_practice.cores import models
 from fastapi_practice.cores.hashing import Hash
 from fastapi_practice.cores.redis1 import get_from_redis, set_from_db_to_redis
+from fastapi_practice.cores.minio_client import minio_client
+import os
+
+async def upload_profile_image(
+    db: Session ,
+    file: UploadFile ,
+    user=Depends(),
+):
+    bucket_name = "images"
+
+    if not minio_client.bucket_exists(bucket_name):
+        minio_client.make_bucket(bucket_name)
+
+    file_extension = os.path.splitext(file.filename)[1]
+    object_name = f"image_{os.urandom(8).hex()}{file_extension}"
+
+    try:
+        minio_client.put_object(
+            bucket_name,
+            object_name,
+            file.file,
+            length=-1,
+            part_size=10 * 1024 * 1024,
+        )
+
+        # save path in DB
+        image_path = f"/{bucket_name}/{object_name}"
+        setattr(user, "picture_path", image_path)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return {"message": "Image uploaded successfully", "path": image_path}
+
+    except Exception as e:
+        return {"message": f"Error uploading image: {e}"}
 
 
 def create(request: models.User, db: Session):
